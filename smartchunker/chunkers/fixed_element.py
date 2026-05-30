@@ -1,6 +1,6 @@
 import uuid
 import re
-from typing import List, Dict, Any
+from typing import List, Dict, Any, cast
 from smartchunker.elements import (
     Element,
     Document,
@@ -97,7 +97,8 @@ class FixedElementChunker(BaseChunker):
 
         # Element exceeds max_tokens, perform structure-specific splitting
         if isinstance(el, TableElement):
-            return split_table_element(el, self.max_tokens, self.tokenizer)
+            # split_table_element returns List[TableElement]; cast to List[Element]
+            return cast(List[Element], split_table_element(el, self.max_tokens, self.tokenizer))
             
         elif isinstance(el, ParagraphElement):
             # Split paragraph into sentences using basic punctuation regex

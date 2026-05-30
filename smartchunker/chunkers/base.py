@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Optional
 from smartchunker.elements import Element, Document
 from smartchunker.tokenizers import TokenizerType, resolve_tokenizer
 
@@ -44,7 +44,7 @@ class BaseChunker(ABC):
     def __init__(
         self,
         max_tokens: int = 512,
-        tokenizer: TokenizerType = None,
+        tokenizer: Optional[TokenizerType] = None,
         overlap_tokens: int = 0
     ):
         self.max_tokens = max_tokens
