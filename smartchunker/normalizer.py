@@ -36,16 +36,45 @@ class Normalizer:
         node_type = raw_node.get("type", "").lower()
         metadata = raw_node.get("metadata", {})
         
+        # --- Core Format Mappings & Unstructured Mappings ---
         if node_type == "heading":
             level = int(raw_node.get("level", 1))
             text = raw_node.get("text", "")
             return HeadingElement(text=text, level=level, metadata=metadata)
             
-        elif node_type == "paragraph":
+        elif node_type == "title":
+            # Map Unstructured Title to H1 Heading
+            text = raw_node.get("text", "")
+            return HeadingElement(text=text, level=1, metadata=metadata)
+            
+        elif node_type == "header":
+            # Map Unstructured Header to H2 Heading
+            text = raw_node.get("text", "")
+            return HeadingElement(text=text, level=2, metadata=metadata)
+            
+        elif node_type in ("paragraph", "narrativetext", "text", "uncategorizedtext"):
             text = raw_node.get("text", "")
             return ParagraphElement(text=text, metadata=metadata)
             
         elif node_type == "table":
+            # Check if this is an Unstructured table containing HTML in metadata
+            html_table = metadata.get("text_as_html", "")
+            if html_table:
+                try:
+                    from bs4 import BeautifulSoup
+                    soup = BeautifulSoup(html_table, "html.parser")
+                    headers = [th.get_text().strip() for th in soup.find_all("th")]
+                    rows = []
+                    for tr in soup.find_all("tr"):
+                        cells = [td.get_text().strip() for td in tr.find_all("td")]
+                        if cells:
+                            rows.append(cells)
+                    if rows:
+                        return TableElement(rows=rows, headers=headers if headers else None, metadata=metadata)
+                except Exception:
+                    pass
+            
+            # Default Core Table parsing
             rows = raw_node.get("rows", [])
             headers = raw_node.get("headers", None)
             return TableElement(rows=rows, headers=headers, metadata=metadata)
@@ -60,8 +89,13 @@ class Normalizer:
             ordered = bool(raw_node.get("ordered", False))
             return ListElement(items=items, ordered=ordered, metadata=metadata)
             
+        elif node_type == "listitem":
+            # Map Unstructured ListItem
+            text = raw_node.get("text", "")
+            return ListElement(items=[text], ordered=False, metadata=metadata)
+            
         else:
-            # Fallback to general paragraph if type is unrecognised
+            # Fallback to general paragraph if type is unrecognized
             text = raw_node.get("text", str(raw_node))
             return ParagraphElement(text=text, metadata=metadata)
 

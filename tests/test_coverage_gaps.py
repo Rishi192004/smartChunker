@@ -242,3 +242,42 @@ def test_fixed_element_chunker_oversized_elements():
     assert len(chunks_list) >= 2
     assert "item1" in chunks_list[0].text
     assert "item2" in chunks_list[1].text
+
+
+def test_unstructured_normalizer_mappings():
+    raw_nodes = [
+        {"type": "Title", "text": "Unstructured Title"},
+        {"type": "Header", "text": "Unstructured H2"},
+        {"type": "NarrativeText", "text": "Unstructured Paragraph"},
+        {"type": "ListItem", "text": "Bullet Item"},
+        {
+            "type": "Table",
+            "text": "Fallback text",
+            "metadata": {
+                "text_as_html": "<table><thead><tr><th>H1</th></tr></thead><tbody><tr><td>V1</td></tr></tbody></table>"
+            }
+        }
+    ]
+    
+    normalizer = Normalizer()
+    doc = normalizer.normalize(raw_nodes)
+    
+    assert len(doc.elements) == 5
+    
+    assert isinstance(doc.elements[0], HeadingElement)
+    assert doc.elements[0].level == 1
+    assert doc.elements[0].text == "Unstructured Title"
+    
+    assert isinstance(doc.elements[1], HeadingElement)
+    assert doc.elements[1].level == 2
+    
+    assert isinstance(doc.elements[2], ParagraphElement)
+    assert doc.elements[2].text == "Unstructured Paragraph"
+    
+    assert isinstance(doc.elements[3], ListElement)
+    assert doc.elements[3].items == ["Bullet Item"]
+    
+    assert isinstance(doc.elements[4], TableElement)
+    assert doc.elements[4].headers == ["H1"]
+    assert doc.elements[4].rows == [["V1"]]
+
