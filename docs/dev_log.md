@@ -60,5 +60,18 @@ This document records the progress, design challenges, and solutions encountered
 
 ---
 
+## Log Entry: 2026-05-30 — Milestone 6: Ecosystem Adapters
+
+### What was built
+1. **LangChainAdapter**: Provides a mapping function to export `Chunk` instances as standard LangChain `Document` objects.
+2. **LlamaIndexAdapter**: Provides a mapping function to export `Chunk` instances as standard LlamaIndex `TextNode` objects.
+
+### Design Decisions & Challenges
+* **Zero Dependency Lock-In**: To keep SmartChunker zero-dependency, we avoid importing `langchain_core` or `llama_index` at the top level of our modules. Instead, we perform local deferred imports inside the adapter conversion methods. If a developer calls `to_document` or `to_node` without the corresponding packages installed, a helpful custom `ImportError` is raised advising them what to install.
+* **Testing without Heavy Ecosystem Packages**: We verified the adapters work correctly by dynamically mocking `langchain_core` and `llama_index` modules using `monkeypatch` and `types.ModuleType`. This permits full integration validation of mapping fields (e.g. `page_content`, `text`, `id_`, `metadata`) without polluting the virtual environment with heavy external installations.
+
+---
+
+
 
 
