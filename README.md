@@ -103,6 +103,29 @@ chunker = SmartChunker(
 )
 ```
 
+## 🔌 Unstructured.io Direct Integration
+
+SmartChunker natively translates JSON dictionary output elements from the **Unstructured.io** partitioning engine, enabling you to run structure-aware chunking over parsed PDFs, DOCXs, and slides with zero custom translation logic:
+
+*   **Titles and Headers** map directly to `HeadingElement` nodes.
+*   **ListItems** map directly to list nodes.
+*   **Tables** automatically parse cell arrays and rows from Unstructured's `metadata.text_as_html` property to guarantee boundary-safe splits.
+
+```python
+from smartchunker import SmartChunker
+from smartchunker.normalizer import Normalizer
+
+# Raw output array from Unstructured client / API partition
+unstructured_payload = [
+    {"type": "Title", "text": "API Manual"},
+    {"type": "Table", "text": "Fallback text", "metadata": {"text_as_html": "<table>...</table>"}}
+]
+
+# Normalize and chunk instantly
+doc = Normalizer().normalize(unstructured_payload)
+chunks = SmartChunker(max_tokens=256).chunk(doc)
+```
+
 ---
 
 ## 🔌 Framework Export Adapters
