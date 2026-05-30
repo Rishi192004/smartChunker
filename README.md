@@ -8,6 +8,20 @@
 
 Most RAG pipelines fail because standard recursive splitters blindly slice tables, code blocks, and list items in half, destroying their semantic coherence. SmartChunker parses Markdown or HTML documents into an **Element Abstract Syntax Tree (AST)**, then splits them safely along structural boundaries—automatically propagating parent heading paths and repeating table headers on broken sub-chunks.
 
+## ⚡ The 60-Second Install & 5-Minute Proof
+
+Can you see why SmartChunker is useful in under 5 minutes? **Yes.**
+
+1. **Install in under 10 seconds** (zero heavy system compilation binaries):
+   ```bash
+   pip install smartchunker
+   ```
+2. **Verify in 2 seconds** by running our built-in comparative benchmark demo:
+   ```bash
+   smartchunker-demo
+   ```
+This prints a side-by-side diagnostic showing how standard character splitters slice tables in half, while SmartChunker keeps layouts intact, repeats headers, and injects parent heading paths as breadcrumbs.
+
 ---
 
 ## ✨ Features
