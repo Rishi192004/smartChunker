@@ -61,3 +61,7 @@ env/
 .idea/
 *.swp
 *.swo
+
+# Study Guide
+docs/study_guide.md
+
