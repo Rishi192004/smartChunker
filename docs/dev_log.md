@@ -44,4 +44,21 @@ This document records the progress, design challenges, and solutions encountered
 
 ---
 
+## Log Entry: 2026-05-30 — Milestones 4 & 5: Chunk Engine, Strategies, and Metadata Engine
+
+### What was built
+1. **Chunk Model**: Represents the output containing `text`, `metadata`, `source_elements`, `token_count`, `chunk_id`, and `heading_path`.
+2. **FixedElementChunker**: Implements sequential element grouping. Checks whether individual elements (paragraphs, lists, code blocks, tables) exceed `max_tokens` and splits them structure-safely using specific sub-splitters.
+3. **HeadingAwareChunker**: Automatically splits documents on heading levels (H1 to H6), using the heading boundary as the start of a new chunk, falling back to fixed element chunking inside large sections.
+4. **Metadata Engines**:
+   - `propagate_heading_paths`: Traverses document to build a state-based parent heading path breadcrumb list.
+   - `split_table_element`: Re-packages a large table row-by-row into smaller table instances, repeating column headers in each sub-table.
+
+### Design Decisions & Challenges
+* **Heading Path Context Loss in Section Chunking**: In `HeadingAwareChunker`, elements are divided into isolated sub-documents (sections) before chunking. However, this caused `propagate_heading_paths` inside the sub-documents to lose context of higher-level headings from previous sections. We resolved this by pre-propagating heading paths across the *entire* document first, and configuring `FixedElementChunker` to skip path propagation if elements already carry heading paths.
+* **Granular Element Splitting**: If a paragraph or code block is larger than `max_tokens`, simply packing it as-is violates strict token budgets. We built safe fallback segment splits (sentence token boundaries for text, line bounds for code blocks, individual items for lists, and row bounds for tables) to guarantee strict bounds.
+
+---
+
+
 
