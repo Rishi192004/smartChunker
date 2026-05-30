@@ -1,4 +1,4 @@
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Optional
 from smartchunker.elements import (
     Document,
     Element,
@@ -99,7 +99,7 @@ class Normalizer:
             text = raw_node.get("text", str(raw_node))
             return ParagraphElement(text=text, metadata=metadata)
 
-    def normalize(self, raw_nodes: List[Dict[str, Any]], doc_metadata: Dict[str, Any] = None) -> Document:
+    def normalize(self, raw_nodes: List[Dict[str, Any]], doc_metadata: Optional[Dict[str, Any]] = None) -> Document:
         """Convert a list of raw nodes into a unified Document AST."""
         elements = [self.normalize_element(node) for node in raw_nodes if node]
         return Document(elements=elements, metadata=doc_metadata)

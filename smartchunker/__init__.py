@@ -25,6 +25,7 @@ class SmartChunker:
         self.markdown_parser = MarkdownParser()
         self.html_parser = HTMLParser()
 
+
     def parse_markdown(self, text: str, metadata: dict = None) -> Document:
         """Parse markdown string into a standardized Document AST."""
         nodes = self.markdown_parser.parse(text)

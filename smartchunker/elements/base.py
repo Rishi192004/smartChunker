@@ -1,10 +1,10 @@
 from abc import ABC, abstractmethod
-from typing import Dict, Any
+from typing import Dict, Any, Optional
 
 class Element(ABC):
     """Abstract Base Class representing a document layout element."""
 
-    def __init__(self, text: str, metadata: Dict[str, Any] = None):
+    def __init__(self, text: str, metadata: Optional[Dict[str, Any]] = None):
         self.text = text
         self.metadata = metadata if metadata is not None else {}
 

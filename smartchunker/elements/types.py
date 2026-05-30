@@ -4,7 +4,7 @@ from smartchunker.elements.base import Element
 class HeadingElement(Element):
     """Represents a heading element (H1 to H6)."""
 
-    def __init__(self, text: str, level: int, metadata: Dict[str, Any] = None):
+    def __init__(self, text: str, level: int, metadata: Optional[Dict[str, Any]] = None):
         super().__init__(text, metadata)
         self.level = level
         self.metadata["level"] = level
@@ -33,7 +33,7 @@ class TableElement(Element):
         self,
         rows: List[List[str]],
         headers: Optional[List[str]] = None,
-        metadata: Dict[str, Any] = None
+        metadata: Optional[Dict[str, Any]] = None
     ):
         self.headers = headers if headers is not None else []
         self.rows = rows
@@ -93,7 +93,7 @@ class CodeBlockElement(Element):
         self,
         text: str,
         language: Optional[str] = None,
-        metadata: Dict[str, Any] = None
+        metadata: Optional[Dict[str, Any]] = None
     ):
         super().__init__(text, metadata)
         self.language = language or ""
@@ -115,7 +115,7 @@ class ListElement(Element):
         self,
         items: List[str],
         ordered: bool = False,
-        metadata: Dict[str, Any] = None
+        metadata: Optional[Dict[str, Any]] = None
     ):
         self.items = items
         self.ordered = ordered

@@ -1,4 +1,4 @@
-from typing import List, Dict, Any, Type, TypeVar
+from typing import List, Dict, Any, Type, TypeVar, Optional
 from smartchunker.elements.base import Element
 
 T = TypeVar('T', bound=Element)
@@ -6,7 +6,7 @@ T = TypeVar('T', bound=Element)
 class Document:
     """A container representing the structured element tree of a document."""
 
-    def __init__(self, elements: List[Element] = None, metadata: Dict[str, Any] = None):
+    def __init__(self, elements: Optional[List[Element]] = None, metadata: Optional[Dict[str, Any]] = None):
         self.elements = elements if elements is not None else []
         self.metadata = metadata if metadata is not None else {}
 
