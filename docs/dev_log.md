@@ -30,3 +30,18 @@ This document records the progress, design challenges, and solutions encountered
 
 ---
 
+## Log Entry: 2026-05-30 — Milestone 3: Tokenizer Interface & Adapters
+
+### What was built
+1. **WordCountTokenizer**: Reusable regex-based word/punctuation counter requiring zero external packages. Used as the default fallback.
+2. **TiktokenTokenizer Adapter**: Custom wrapper for OpenAI's `tiktoken` that dynamically loads cl100k_base if model lookup fails.
+3. **HFTokenizer Adapter**: Custom wrapper for HuggingFace `transformers` tokenizer clients.
+4. **resolve_tokenizer helper**: Resolves input arg (None, Callable, or specific wrapper instance) into standard Callable format for chunking strategies.
+
+### Design Decisions & Challenges
+* **Mock testing optional extras**: We needed to verify that the library throws correct custom `ImportError` exceptions when libraries are missing, even if the testing environment actually has them installed. We solved this by using `monkeypatch` to force `sys.modules["tiktoken"] = None` and `sys.modules["transformers"] = None` in tests, checking that the user-friendly errors are triggered correctly.
+* **Tested Live Tiktoken**: Installed `tiktoken` in our test runner environment and added real testing assertions to ensure token count matches exactly (e.g., "hello world" counts as 2 tokens).
+
+---
+
+
