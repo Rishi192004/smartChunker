@@ -103,7 +103,14 @@ chunker = SmartChunker(
 )
 ```
 
-## 🔌 Unstructured.io Direct Integration
+## 🔌 Unstructured.io Direct Integration & Supported Formats
+
+Depending on whether you use **Unstructured.io** or run SmartChunker standalone, the range of supported document formats changes:
+
+| Ingestion Setup | Supported File Formats | How it works |
+| :--- | :--- | :--- |
+| **Standalone (No Unstructured)** | **Markdown** (`.md`) and **HTML** (`.html`) | Uses built-in standard library regex, `markdown-it-py`, and `BeautifulSoup` to parse paragraphs, tables, lists, and code blocks. |
+| **With Unstructured.io** | **PDFs, Word Docs (`.docx`), PowerPoint (`.pptx`), Images, Emails (`.eml`), Excel (`.xlsx`), and more** | Unstructured.io handles raw file ingestion and extracts layout structures, while SmartChunker normalizes and chunks the resulting outputs. |
 
 SmartChunker natively translates JSON dictionary output elements from the **Unstructured.io** partitioning engine, enabling you to run structure-aware chunking over parsed PDFs, DOCXs, and slides with zero custom translation logic:
 
@@ -125,6 +132,9 @@ unstructured_payload = [
 doc = Normalizer().normalize(unstructured_payload)
 chunks = SmartChunker(max_tokens=256).chunk(doc)
 ```
+
+> [!NOTE]
+> *Active development is underway to expand SmartChunker's native format parsers (such as direct PDF reading) and other performance improvements.*
 
 ---
 
