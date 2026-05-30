@@ -15,3 +15,18 @@ This document records the progress, design challenges, and solutions encountered
 * **Core Tokenizer Interface**: Kept the core library dependency-free by using a standard word-count fallback. Optional adapters wrap `tiktoken` and HuggingFace's tokenizers if the packages are installed.
 
 ---
+
+## Log Entry: 2026-05-30 — Milestone 2: Markdown & HTML Parsers + Normalizer
+
+### What was built
+1. **BaseParser Interface**: Abstract class mapping all parsers to a common output signature (list of intermediate dictionaries).
+2. **MarkdownParser**: Implemented tokenizer token-stream traversal utilizing `markdown-it-py`. Added support for table, lists, fenced code blocks, headings, and paragraphs.
+3. **HTMLParser**: Implemented BeautifulSoup tree parsing to classify structural elements.
+4. **Normalizer End-to-End**: Standardized raw parser dictionaries into AST nodes, linking parsers to the core element tree.
+
+### Design Decisions & Challenges
+* **Markdown-it Linkify dependency**: Initially used `gfm-like` configuration for `markdown-it-py` to get table support. However, it threw a `ModuleNotFoundError` because linkify-it is not installed by default and requires external python libraries. We solved this by using the standard default `MarkdownIt()` configurations and explicitly calling `.enable("table")`. This preserves a clean dependency footprint.
+* **Double Processing Prevention**: Markdown-it emits paragraph/inline tokens inside list items and tables. We resolved this by advancing the parser's index pointer `idx` past list item and table scopes during state collection, naturally skipping nested child tags in the primary loops.
+
+---
+
